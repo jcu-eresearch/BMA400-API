@@ -1,0 +1,33 @@
+{
+  "name": "BMA400",
+  "version": "0.0.1",
+  "description": "A C library to drive the Bosch BMA400 accelerometer chip.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jcu-eresearch/BMA400-API.git"
+  },
+  "keywords": [
+    "Sensor"
+  ],
+  "authors": [
+    {
+      "name": "Bosch Sensortec GmbH"
+    },
+    {
+      "name": "NigelB",
+      "maintainer": true
+    }
+  ],
+  "frameworks": [
+    "*"
+  ],
+
+  "license": "BSD-3-Clause",
+  "build": {
+    "libArchive": false,
+    "srcFilter": [
+      "+<*.c>",
+      "+<*.h>"
+    ]
+  }
+}
