@@ -692,8 +692,7 @@ enum bma400_intf {
  * @retval 0 for Success
  * @retval Non-zero for Failure
  */
-typedef BMA400_INTF_RET_TYPE (*bma400_read_fptr_t)(uint8_t reg_addr, uint8_t *reg_data, uint32_t length,
-                                                   void *intf_ptr);
+BMA400_INTF_RET_TYPE bma400_read(uint8_t reg_addr, uint8_t *reg_data, uint32_t length, void *intf_ptr);
 
 /*!
  * @brief Bus communication function pointer which should be mapped to
@@ -708,8 +707,7 @@ typedef BMA400_INTF_RET_TYPE (*bma400_read_fptr_t)(uint8_t reg_addr, uint8_t *re
  * @retval Non-zero for Failure
  *
  */
-typedef BMA400_INTF_RET_TYPE (*bma400_write_fptr_t)(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length,
-                                                    void *intf_ptr);
+BMA400_INTF_RET_TYPE bma400_write(uint8_t reg_addr, const uint8_t *reg_data, uint32_t length, void *intf_ptr);
 
 /*!
  * @brief Delay function pointer which should be mapped to
@@ -719,7 +717,7 @@ typedef BMA400_INTF_RET_TYPE (*bma400_write_fptr_t)(uint8_t reg_addr, const uint
  * @param[in,out] intf_ptr : Void pointer that can enable the linking of descriptors
  *                           for interface related callbacks
  */
-typedef void (*bma400_delay_us_fptr_t)(uint32_t period, void *intf_ptr);
+void bma400_delay_us(uint32_t period, void *intf_ptr);
 
 /*
  * Sensor selection enums
@@ -1399,15 +1397,6 @@ struct bma400_dev
 
     /* Decide SPI or I2C read mechanism */
     uint8_t dummy_byte;
-
-    /* Bus read function pointer */
-    bma400_read_fptr_t read;
-
-    /* Bus write function pointer */
-    bma400_write_fptr_t write;
-
-    /* delay(in us) function pointer */
-    bma400_delay_us_fptr_t delay_us;
 
     /* Resolution for FOC */
     uint8_t resolution;

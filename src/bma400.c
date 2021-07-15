@@ -631,7 +631,7 @@ int8_t bma400_init(struct bma400_dev *dev)
     if (rslt == BMA400_OK)
     {
         /* Initial power-up time */
-        dev->delay_us(5000, dev->intf_ptr);
+        bma400_delay_us(5000, dev->intf_ptr);
 
         /* Assigning dummy byte value */
         if (dev->intf == BMA400_SPI_INTF)
@@ -690,7 +690,7 @@ int8_t bma400_set_regs(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len, 
          */
         if (len == 1)
         {
-            dev->intf_rslt = dev->write(reg_addr, reg_data, len, dev->intf_ptr);
+            dev->intf_rslt = bma400_write(reg_addr, reg_data, len, dev->intf_ptr);
             if (dev->intf_rslt != BMA400_INTF_RET_SUCCESS)
             {
                 /* Failure case */
@@ -706,7 +706,7 @@ int8_t bma400_set_regs(uint8_t reg_addr, const uint8_t *reg_data, uint32_t len, 
         {
             for (count = 0; (count < len) && (rslt == BMA400_OK); count++)
             {
-                dev->intf_rslt = dev->write(reg_addr, &reg_data[count], 1, dev->intf_ptr);
+                dev->intf_rslt = bma400_write(reg_addr, &reg_data[count], 1, dev->intf_ptr);
                 reg_addr++;
                 if (dev->intf_rslt != BMA400_INTF_RET_SUCCESS)
                 {
@@ -745,7 +745,7 @@ int8_t bma400_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint32_t len, struct
         }
 
         /* Read the data from the reg_addr */
-        dev->intf_rslt = dev->read(reg_addr, temp_buff, temp_len, dev->intf_ptr);
+        dev->intf_rslt = bma400_read(reg_addr, temp_buff, temp_len, dev->intf_ptr);
         if (dev->intf_rslt == BMA400_INTF_RET_SUCCESS)
         {
             for (index = 0; index < len; index++)
@@ -782,7 +782,7 @@ int8_t bma400_soft_reset(struct bma400_dev *dev)
     {
         /* Reset the device */
         rslt = bma400_set_regs(BMA400_REG_COMMAND, &data, 1, dev);
-        dev->delay_us(BMA400_DELAY_US_SOFT_RESET, dev->intf_ptr);
+        bma400_delay_us(BMA400_DELAY_US_SOFT_RESET, dev->intf_ptr);
         if ((rslt == BMA400_OK) && (dev->intf == BMA400_SPI_INTF))
         {
             /* Dummy read of 0x7F register to enable SPI Interface
@@ -818,11 +818,11 @@ int8_t bma400_set_power_mode(uint8_t power_mode, struct bma400_dev *dev)
              * Low power mode has 25Hz frequency and hence it needs
              * 40ms delay to enter low power mode
              */
-            dev->delay_us(40000, dev->intf_ptr);
+            bma400_delay_us(40000, dev->intf_ptr);
         }
         else
         {
-            dev->delay_us(10000, dev->intf_ptr); /* TBC */
+            bma400_delay_us(10000, dev->intf_ptr); /* TBC */
         }
     }
 
@@ -1492,7 +1492,7 @@ static int8_t null_ptr_check(const struct bma400_dev *dev)
 {
     int8_t rslt;
 
-    if ((dev == NULL) || (dev->read == NULL) || (dev->write == NULL) || (dev->intf_ptr == NULL))
+    if ((dev == NULL) || (dev->intf_ptr == NULL))
     {
         /* Device structure pointer is not valid */
         rslt = BMA400_E_NULL_PTR;
@@ -3017,7 +3017,7 @@ static int8_t read_fifo(struct bma400_fifo_data *fifo, struct bma400_dev *dev)
         if (reg_data == 0)
         {
             /* Read FIFO Buffer since FIFO read is enabled */
-            dev->intf_rslt = dev->read(fifo_addr, fifo->data, (uint32_t)fifo->length, dev->intf_ptr);
+            dev->intf_rslt = bma400_read(fifo_addr, fifo->data, (uint32_t)fifo->length, dev->intf_ptr);
             if (dev->intf_rslt != BMA400_INTF_RET_SUCCESS)
             {
                 rslt = BMA400_E_COM_FAIL;
@@ -3031,10 +3031,10 @@ static int8_t read_fifo(struct bma400_fifo_data *fifo, struct bma400_dev *dev)
             if (rslt == BMA400_OK)
             {
                 /* Delay to enable the FIFO */
-                dev->delay_us(1000, dev->intf_ptr);
+                bma400_delay_us(1000, dev->intf_ptr);
 
                 /* Read FIFO Buffer since FIFO read is enabled*/
-                dev->intf_rslt = dev->read(fifo_addr, fifo->data, (uint32_t)fifo->length, dev->intf_ptr);
+                dev->intf_rslt = bma400_read(fifo_addr, fifo->data, (uint32_t)fifo->length, dev->intf_ptr);
 
                 if (dev->intf_rslt == BMA400_OK)
                 {
@@ -3483,7 +3483,7 @@ static int8_t positive_excited_accel(struct bma400_sensor_data *accel_pos, struc
     if (rslt == BMA400_OK)
     {
         /* Read accel data after 50ms delay */
-        dev->delay_us(BMA400_DELAY_US_SELF_TEST_DATA_READ, dev->intf_ptr);
+        bma400_delay_us(BMA400_DELAY_US_SELF_TEST_DATA_READ, dev->intf_ptr);
         rslt = bma400_get_accel_data(BMA400_DATA_ONLY, accel_pos, dev);
     }
 
@@ -3500,7 +3500,7 @@ static int8_t negative_excited_accel(struct bma400_sensor_data *accel_neg, struc
     if (rslt == BMA400_OK)
     {
         /* Read accel data after 50ms delay */
-        dev->delay_us(BMA400_DELAY_US_SELF_TEST_DATA_READ, dev->intf_ptr);
+        bma400_delay_us(BMA400_DELAY_US_SELF_TEST_DATA_READ, dev->intf_ptr);
         rslt = bma400_get_accel_data(BMA400_DATA_ONLY, accel_neg, dev);
         if (rslt == BMA400_OK)
         {
@@ -3539,7 +3539,7 @@ static int8_t enable_self_test(struct bma400_dev *dev)
         if (rslt == BMA400_OK)
         {
             /* self test enabling delay */
-            dev->delay_us(BMA400_DELAY_US_SELF_TEST, dev->intf_ptr);
+            bma400_delay_us(BMA400_DELAY_US_SELF_TEST, dev->intf_ptr);
         }
 
         if (rslt == BMA400_OK)
