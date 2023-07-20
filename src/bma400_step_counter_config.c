@@ -1,0 +1,56 @@
+#include "bma400_step_counter_config.h"
+
+
+uint8_t bma400_step_counter_config_wrist[BMA_STEP_COUNTER_CONFIG_SIZE] = {
+    1,
+   45,
+  123,
+  212,
+   68,
+    1,
+   59,
+  122,
+  219,
+  123,
+   63,
+  108,
+  205,
+   39,
+   25,
+  150,
+  160,
+  195,
+   14,
+   12,
+   60,
+  240,
+    0,
+  247
+};
+
+uint8_t bma400_step_counter_config_non_wrist[BMA_STEP_COUNTER_CONFIG_SIZE] = {
+  1,
+ 50,
+120,
+230,
+135,
+  0,
+132,
+108,
+156,
+117,
+100,
+126,
+170,
+ 12,
+ 12,
+ 74,
+160,
+  0,
+  0,
+ 12,
+ 60,
+240,
+  1,
+  0
+};
